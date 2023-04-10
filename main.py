@@ -1,7 +1,8 @@
 from math import *
 import matplotlib.pyplot as plt
 import os
-
+import time
+START_TIME = time.time()
 min_time_difference = 0.05
 max_time_difference = 1
 bias = 3.75
@@ -20,6 +21,15 @@ def convert(scientific):
     exponent = int(parts[1])
     return base * pow(10, exponent)
 
+def jerk(a1, a2, t1, t2):
+    return (a2 - a1) / (t2 - t1)
+
+def avg_jerk(accelerations, times):
+    s = len(accelerations)
+    jerks = []
+    for i in range(s - 1):
+        jerks.append(jerk(accelerations[i], accelerations[i+1], times[i], times[i+1]))
+    return avg(jerks)    
 
 with open('arduino-data/data.txt', 'r') as f:
     lines = f.readlines()
@@ -95,7 +105,7 @@ for i in range(len(lines)):
 #     else:
 #         print("small")
 # input("press enter to continue ... ")
-def graph(filepath, n):
+def graph(filepath):
     times = []
     overall_acc = []
     with open(filepath, "r") as w:
@@ -107,15 +117,60 @@ def graph(filepath, n):
 
     plt.title("Magnitude of Acceleration vs. Time")
     plt.scatter(times, overall_acc)
-    plt.savefig(f"images/figure_falling_{n}.png")
+    # plt.savefig(f"images/figure_falling_{n}.png")
     plt.show()
 
 # graph("phyphox-data/walking/walking_1.csv")
 fallingFiles = "phyphox-data/falling"
 fallingFilesNum = len(os.listdir(fallingFiles))
-
+"""
 for i in range(1, fallingFilesNum + 1):
     fileName = f"{fallingFiles}/falling_{i}.csv"
-    # print(fileName)
+    print(fileName)
     graph(fileName, i)
+"""
+
+
+def whenFalling(csv_file):
+    with open(csv_file, "r") as f:
+        lines = f.readlines()
+        times = [convert(l.split(",")[0]) for l in lines[1:]]
+        absolutes = [convert(l.split(",")[4]) for l in lines[1:]]
+        started = False
+        st_num = 0
+        stChange = True
+        endChange = True
+        slopes = []
+        end_num = 0
+        ended = False
+        # mission_critical = 0
+        i = 0
+        step = 15 #can be adjusted
+        while (not started) and (not ended) and (i < (len(lines) - (step  -2))):
+            slope = avg_jerk(absolutes[i:i+step], times[i:i+step])
+            slopes.append(slope)
+            if (slope < -10 and stChange):
+                st_num = i/100
+                stChange = False
+            if (slope > 100 and endChange):
+                end_num = i/100
+                endChange = False
+                
+            # if (slope < -30):
+            #     mission_critical = slope
+            # if (slope > 150):
+            #     end_num = slope
+            print(f"Slope when i equals {i}: {slope} m/s^3")
+            # print(f"status at i equals {i}: {(slope < -9)}")
+            i += 1
+        # print(len(slopes))
+        # print(len(list(range(len(lines) - step + 2))))
+        # plt.scatter(list(range(len(lines) - step + 2)), slopes)
+        # plt.show()
+    print(f"Start time: {st_num}s")
+    print(f"End time: {end_num}s")
+whenFalling("phyphox-data/falling/falling_1.csv")
+END_TIME = time.time()
+
+print(f"Runtime: {END_TIME-START_TIME}s")
 
