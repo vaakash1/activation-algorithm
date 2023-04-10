@@ -1,6 +1,6 @@
 from math import *
 import matplotlib.pyplot as plt
-
+import os
 
 min_time_difference = 0.05
 max_time_difference = 1
@@ -12,7 +12,16 @@ def comp(x, y, z):
 def avg(arr):
     return sum(arr)/len(arr)
 
-with open('data.txt', 'r') as f:
+def convert(scientific):
+    if "E" not in scientific:
+        return scientific
+    parts = scientific.split("E")
+    base = float(parts[0])
+    exponent = int(parts[1])
+    return base * pow(10, exponent)
+
+
+with open('arduino-data/data.txt', 'r') as f:
     lines = f.readlines()
     times = [line.split(" ->")[0] for line in lines if " ->" in line]
 
@@ -68,12 +77,16 @@ for i in range(len(lines)):
         temp_x_vals.append(temp_count)
         temp_y_vals.append(float(temp))
 
-print(f"Temperature appeared {temp_count} times and the list of temps is {temp_y_vals}.")
-print(f"Acceleration appeared {acc_count} times and the list of accelerations is {acc_y_vals}.")
-print(f"Rotation appeared {rot_count} times and the list of rotations is {rot_y_vals}.")
+# print(f"Temperature appeared {temp_count} times and the list of temps is {temp_y_vals}.")
+# print(f"Acceleration appeared {acc_count} times and the list of accelerations is {acc_y_vals}.")
+# print(f"Rotation appeared {rot_count} times and the list of rotations is {rot_y_vals}.")
 
-plt.scatter(acc_x_vals, acc_y_vals)
-plt.show()
+# UNCOMMENT THIS TO GRAPH ARDUINO DATA 04.07.23
+# plt.title("Temperature vs. Trial #")
+# plt.xlabel("Trial #") 
+# plt.ylabel("Temperature (°C)")
+# plt.scatter(temp_x_vals, temp_y_vals)
+# plt.show()
 
 
 # for i in rotation:
@@ -81,3 +94,28 @@ plt.show()
 #         print("large")
 #     else:
 #         print("small")
+# input("press enter to continue ... ")
+def graph(filepath, n):
+    times = []
+    overall_acc = []
+    with open(filepath, "r") as w:
+        lines = w.readlines()
+        for l in lines[1:]:
+            parts = l.split(",")
+            times.append(convert(parts[0]))
+            overall_acc.append(convert(parts[4]))
+
+    plt.title("Magnitude of Acceleration vs. Time")
+    plt.scatter(times, overall_acc)
+    plt.savefig(f"images/figure_falling_{n}.png")
+    plt.show()
+
+# graph("phyphox-data/walking/walking_1.csv")
+fallingFiles = "phyphox-data/falling"
+fallingFilesNum = len(os.listdir(fallingFiles))
+
+for i in range(1, fallingFilesNum + 1):
+    fileName = f"{fallingFiles}/falling_{i}.csv"
+    # print(fileName)
+    graph(fileName, i)
+
