@@ -10,6 +10,9 @@ bias = 3.75
 def comp(x, y, z):
     return sqrt(x**2 + y**2 + z**2)
 
+def get_range(accelerations):
+    return (max(accelerations) - min(accelerations))
+
 def avg(arr):
     return sum(arr)/len(arr)
 
@@ -31,7 +34,7 @@ def avg_jerk(accelerations, times):
         jerks.append(jerk(accelerations[i], accelerations[i+1], times[i], times[i+1]))
     return avg(jerks)    
 
-with open('arduino-data/data.txt', 'r') as f:
+with open('arduino-data/misc/orig-data.txt', 'r') as f:
     lines = f.readlines()
     times = [line.split(" ->")[0] for line in lines if " ->" in line]
 
@@ -163,13 +166,13 @@ def whenFalling(csv_file):
             print(f"Slope when i equals {i}: {slope} m/s^3")
             # print(f"status at i equals {i}: {(slope < -9)}")
             i += 1
-        # print(len(slopes))
-        # print(len(list(range(len(lines) - step + 2))))
-        # plt.scatter(list(range(len(lines) - step + 2)), slopes)
-        # plt.show()
+        print(len(slopes))
+        print(len(list(range(len(lines) - step + 2))))
+        plt.scatter(list(range(len(lines) - step + 2)), slopes)
+        plt.show()
     print(f"Start time: {st_num}s")
     print(f"End time: {end_num}s")
-whenFalling("phyphox-data/falling/falling_1.csv")
+whenFalling("phyphox-data/falling/falling_2.csv")
 END_TIME = time.time()
 
 print(f"Runtime: {END_TIME-START_TIME}s")
