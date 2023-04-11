@@ -125,6 +125,7 @@ def graph(filepath):
 
 # graph("phyphox-data/walking/walking_1.csv")
 fallingFiles = "phyphox-data/falling"
+fallingFilesList = os.listdir(fallingFiles)
 fallingFilesNum = len(os.listdir(fallingFiles))
 """
 for i in range(1, fallingFilesNum + 1):
@@ -134,7 +135,7 @@ for i in range(1, fallingFilesNum + 1):
 """
 
 
-def whenFalling(csv_file):
+def complexFalling(csv_file):
     with open(csv_file, "r") as f:
         lines = f.readlines()
         times = [convert(l.split(",")[0]) for l in lines[1:]]
@@ -166,14 +167,35 @@ def whenFalling(csv_file):
             print(f"Slope when i equals {i}: {slope} m/s^3")
             # print(f"status at i equals {i}: {(slope < -9)}")
             i += 1
-        print(len(slopes))
-        print(len(list(range(len(lines) - step + 2))))
-        plt.scatter(list(range(len(lines) - step + 2)), slopes)
-        plt.show()
+        # print(len(slopes))
+        # print(len(list(range(len(lines) - step + 2))))
+        # plt.scatter(list(range(len(lines) - step + 2)), slopes)
+        # plt.show()
     print(f"Start time: {st_num}s")
     print(f"End time: {end_num}s")
-whenFalling("phyphox-data/falling/falling_2.csv")
+    start_i = int(st_num * 100)
+    end_i = int(end_num * 100)
+    print(f"Start acceleration: {absolutes[start_i]} m/s^2")
+    print(f"End acceleration: {absolutes[end_i]} m/s^2")
+    return [absolutes[start_i], absolutes[end_i]]
+
+
+#running complex falling
+start_accelerations = []
+end_accelerations = []
+for s in fallingFilesList:
+    filename = f"{fallingFiles}/{s}"
+    A_both = complexFalling(filename)
+    start_accelerations.append(A_both[0])
+    end_accelerations.append(A_both[1])
+print(f"Start accelerations: {start_accelerations}")
+print(f"End accelerations: {end_accelerations}")
+print(f"AVG. START ACCELERATION: {avg(start_accelerations)}")
+print(f"AVG. END ACCELERATION: {avg(end_accelerations)}")
+#complexFalling("phyphox-data/falling/falling_3.csv")
+
+
+
+#checking runtime
 END_TIME = time.time()
-
 print(f"Runtime: {END_TIME-START_TIME}s")
-
