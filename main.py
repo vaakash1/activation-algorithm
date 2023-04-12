@@ -68,6 +68,7 @@ for i in range(len(lines)):
 
     if ('Acceleration' in l):
         bulk = l.split('Acceleration X: ')[1]
+        print(bulk)
         acc_x = bulk.split(",")[0]
         acc_y = bulk.split(",")[1].split(" Y: ")[1] #todo
         acc_z = bulk.split(",")[2].split(" Z: ")[1].split(" m/s^2")[0]
@@ -95,12 +96,18 @@ for i in range(len(lines)):
 # print(f"Rotation appeared {rot_count} times and the list of rotations is {rot_y_vals}.")
 
 # UNCOMMENT THIS TO GRAPH ARDUINO DATA 04.07.23
-# plt.title("Temperature vs. Trial #")
-# plt.xlabel("Trial #") 
-# plt.ylabel("Temperature (°C)")
-# plt.scatter(temp_x_vals, temp_y_vals)
-# plt.show()
+# emDash = u'\u2014'
+# graphTitle = "Magnitude of Acceleration vs. Trial # {0} vigorousShaking".format(emDash)
+# plt.title(graphTitle)
+print(f"Magnitudes: {acc_y_vals}")
+plt.title("Magnitude of Acceleration vs. Trial #")
+plt.xlabel("Trial #") 
+plt.ylabel("Acceleration (m/s^2)")
+plt.scatter(acc_x_vals, acc_y_vals)
+# plt.savefig("images/data/arduino/walkingData2.png")
+plt.show()
 
+#
 
 # for i in rotation:
 #     if (comp(i[0], i[1], i[2]) >= bias):
@@ -164,7 +171,7 @@ def complexFalling(csv_file):
             #     mission_critical = slope
             # if (slope > 150):
             #     end_num = slope
-            print(f"Slope when i equals {i}: {slope} m/s^3")
+            # print(f"Slope when i equals {i}: {slope} m/s^3")
             # print(f"status at i equals {i}: {(slope < -9)}")
             i += 1
         # print(len(slopes))
