@@ -27,6 +27,16 @@ def convert(scientific):
 def jerk(a1, a2, t1, t2):
     return (a2 - a1) / (t2 - t1)
 
+def global_min(arr: list, sampleRate): #NOTE: Returns a list of [min, place]
+    min = arr[0]
+    min_i = 0
+    for i in arr:
+        if arr[i] < min:
+            min = arr[i]
+            min_i = i
+    return [min, min_i]
+    
+
 def avg_jerk(accelerations, times):
     s = len(accelerations)
     jerks = []
@@ -99,7 +109,7 @@ for i in range(len(lines)):
 # emDash = u'\u2014'
 # graphTitle = "Magnitude of Acceleration vs. Trial # {0} vigorousShaking".format(emDash)
 # plt.title(graphTitle)
-print(f"Magnitudes: {acc_y_vals}")
+# print(f"Magnitudes: {acc_y_vals}")
 plt.title("Magnitude of Acceleration vs. Trial #")
 plt.xlabel("Trial #") 
 plt.ylabel("Acceleration (m/s^2)")
@@ -129,6 +139,7 @@ def graph(filepath):
     plt.scatter(times, overall_acc)
     # plt.savefig(f"images/figure_falling_{n}.png")
     plt.show()
+
 
 # graph("phyphox-data/walking/walking_1.csv")
 fallingFiles = "phyphox-data/falling"
@@ -178,12 +189,12 @@ def complexFalling(csv_file):
         # print(len(list(range(len(lines) - step + 2))))
         # plt.scatter(list(range(len(lines) - step + 2)), slopes)
         # plt.show()
-    print(f"Start time: {st_num}s")
-    print(f"End time: {end_num}s")
+    # print(f"Start time: {st_num}s")
+    # print(f"End time: {end_num}s")
     start_i = int(st_num * 100)
     end_i = int(end_num * 100)
-    print(f"Start acceleration: {absolutes[start_i]} m/s^2")
-    print(f"End acceleration: {absolutes[end_i]} m/s^2")
+    # print(f"Start acceleration: {absolutes[start_i]} m/s^2")
+    # print(f"End acceleration: {absolutes[end_i]} m/s^2")
     return [absolutes[start_i], absolutes[end_i]]
 
 
@@ -195,10 +206,10 @@ for s in fallingFilesList:
     A_both = complexFalling(filename)
     start_accelerations.append(A_both[0])
     end_accelerations.append(A_both[1])
-print(f"Start accelerations: {start_accelerations}")
-print(f"End accelerations: {end_accelerations}")
-print(f"AVG. START ACCELERATION: {avg(start_accelerations)}")
-print(f"AVG. END ACCELERATION: {avg(end_accelerations)}")
+# print(f"Start accelerations: {start_accelerations}")
+# print(f"End accelerations: {end_accelerations}")
+# print(f"AVG. START ACCELERATION: {avg(start_accelerations)}")
+# print(f"AVG. END ACCELERATION: {avg(end_accelerations)}")
 #complexFalling("phyphox-data/falling/falling_3.csv")
 
 
