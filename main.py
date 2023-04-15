@@ -1,6 +1,7 @@
 from math import *
 import matplotlib.pyplot as plt
 import os
+from copy import deepcopy
 import time
 START_TIME = time.time()
 min_time_difference = 0.05
@@ -78,7 +79,7 @@ for i in range(len(lines)):
 
     if ('Acceleration' in l):
         bulk = l.split('Acceleration X: ')[1]
-        print(bulk)
+        # print(bulk)
         acc_x = bulk.split(",")[0]
         acc_y = bulk.split(",")[1].split(" Y: ")[1] #todo
         acc_z = bulk.split(",")[2].split(" Z: ")[1].split(" m/s^2")[0]
@@ -110,12 +111,12 @@ for i in range(len(lines)):
 # graphTitle = "Magnitude of Acceleration vs. Trial # {0} vigorousShaking".format(emDash)
 # plt.title(graphTitle)
 # print(f"Magnitudes: {acc_y_vals}")
-plt.title("Magnitude of Acceleration vs. Trial #")
-plt.xlabel("Trial #") 
-plt.ylabel("Acceleration (m/s^2)")
-plt.scatter(acc_x_vals, acc_y_vals)
+# plt.title("Magnitude of Acceleration vs. Trial #")
+# plt.xlabel("Trial #") 
+# plt.ylabel("Acceleration (m/s^2)")
+# plt.scatter(acc_x_vals, acc_y_vals)
 # plt.savefig("images/data/arduino/walkingData2.png")
-plt.show()
+# plt.show()
 
 #
 
@@ -212,7 +213,43 @@ for s in fallingFilesList:
 # print(f"AVG. END ACCELERATION: {avg(end_accelerations)}")
 #complexFalling("phyphox-data/falling/falling_3.csv")
 
+def allUnderValue(arr, check):
+    for i in arr:
+        if i > check: 
+            return False
+    return True
+    
+def getSlope(arr_a, arr_t, indexAt, depth):
+    return (arr_a[indexAt] - arr_a[indexAt - depth])/(arr_t[indexAt] - arr_t[indexAt - depth])
 
+
+def simpleFalling(dataFilePath):
+    latency = 6 #How many terms should I check behind
+    max_a = 9.1 #max falling acceleration
+    with open(dataFilePath, 'r') as d:
+        lines = d.readlines()
+        times = [convert(l.split(",")[0]) for l in lines[1:]]
+        absolutes = [convert(l.split(",")[4]) for l in lines[1:]]
+        condition1 = False #checks for magnitude
+        condition2 = False #checks for slope
+       #while ((not condition1) and (not condition2)):
+        current = deepcopy(latency)
+        print(current)
+        for a in absolutes[latency:]:
+            if a < max_a and allUnderValue(absolutes[current - latency: current], max_a) and not condition1:
+                condition1 = True
+                print(f"FILE NAME: {dataFilePath}")
+                print(f"Time for magnitude success: {times[current]}s.")
+                print(f"Magnitude for magnitude success: {absolutes[current]} m/s^2.")
+                print(f"Slope for magnitude success: {getSlope(absolutes, times, current, latency)} m/s^3.\n")
+                condition1 = True
+            current += 1
+
+
+
+for FileName in fallingFilesList:
+    actualPath = f"{fallingFiles}/{FileName}"
+    simpleFalling(actualPath)
 
 #checking runtime
 END_TIME = time.time()

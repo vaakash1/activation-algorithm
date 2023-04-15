@@ -2,5 +2,5 @@
     "port": "COM3",
     "board": "arduino:avr:uno",
     "programmer": "arduinoasisp",
-    "sketch": "TestCode.ino"
+    "sketch": "AT.ino"
 }

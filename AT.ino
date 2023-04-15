@@ -85,7 +85,7 @@ void setup(void) {
   pinMode(LED_BUILTIN, OUTPUT);
 
   Serial.println("");
-  delay(100);
+  delay(100); /*DELAY TIME HERE*/
   pinMode(7, OUTPUT);
   pinMode(8, OUTPUT);  
 }
@@ -98,7 +98,7 @@ void loop() {
     mpu.getEvent(&a, &g, &temp);
 
     /* Print out the values */
-    /*Serial.print("Acceleration X: ");
+    Serial.print("Acceleration X: ");
     Serial.print(a.acceleration.x);
     Serial.print(", Y: ");
     Serial.print(a.acceleration.y);
@@ -112,7 +112,7 @@ void loop() {
     Serial.print(g.gyro.y);
     Serial.print(", Z: ");
     Serial.print(g.gyro.z);
-    Serial.println(" rad/s");*/
+    Serial.println(" rad/s");
     double acceleration_magnitude = sqrt(a.acceleration.x * a.acceleration.x + a.acceleration.y * a.acceleration.y + a.acceleration.z * a.acceleration.z);
     //Serial.print(acceleration_magnitude);
     if(acceleration_magnitude < 11 && acceleration_magnitude > 9){
