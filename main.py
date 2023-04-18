@@ -224,8 +224,8 @@ def getSlope(arr_a, arr_t, indexAt, depth):
 
 
 def simpleFalling(dataFilePath):
-    latency = 6 #How many terms should I check behind
-    max_a = 9.1 #max falling acceleration
+    latency = 10 #How many terms should I check behind
+    max_a = 9.35 #max falling acceleration
     with open(dataFilePath, 'r') as d:
         lines = d.readlines()
         times = [convert(l.split(",")[0]) for l in lines[1:]]
@@ -234,13 +234,13 @@ def simpleFalling(dataFilePath):
         condition2 = False #checks for slope
        #while ((not condition1) and (not condition2)):
         current = deepcopy(latency)
-        print(current)
+        #print(current)
         for a in absolutes[latency:]:
             if a < max_a and allUnderValue(absolutes[current - latency: current], max_a) and not condition1:
                 condition1 = True
                 print(f"FILE NAME: {dataFilePath}")
                 print(f"Time for magnitude success: {times[current]}s.")
-                print(f"Magnitude for magnitude success: {absolutes[current]} m/s^2.")
+                # print(f"Magnitude for magnitude success: {absolutes[current]} m/s^2.")
                 print(f"Slope for magnitude success: {getSlope(absolutes, times, current, latency)} m/s^3.\n")
                 condition1 = True
             current += 1
