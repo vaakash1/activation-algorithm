@@ -1,1 +1,5 @@
 #I am putting a .gitignore file just in case there is any information used in the code that we must keep private.
+test.cpp
+#↑ tested out my cpp compiler to check if it was functional
+.vscode 
+#↑ local config files
