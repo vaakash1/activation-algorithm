@@ -244,6 +244,7 @@ def simpleFalling(dataFilePath):
                 print(f"Slope for magnitude success: {getSlope(absolutes, times, current, latency)} m/s^3.\n")
                 condition1 = True
             current += 1
+    
 
 
 
@@ -253,4 +254,4 @@ for FileName in fallingFilesList:
 
 #checking runtime
 END_TIME = time.time()
-print(f"Runtime: {END_TIME-START_TIME}s")
+print(f"main.py Runtime: {END_TIME-START_TIME}s")
