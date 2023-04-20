@@ -1,4 +1,4 @@
-from main import comp, simpleFalling
+from main import comp, simpleFallingWithoutFile
 import matplotlib.pyplot as plt
 
 times = []
@@ -21,8 +21,7 @@ with open("arduino-data/falling/FallOnBedArduino.TXT") as f:
             plt.scatter(temp_times, temp_accelerations)
             #plt.savefig(f"images/data/arduino/falling/fallingData{j}.png")
             plt.show()
-            if j == 3:
-                print(temp_times)
+            print(f"falling of file {j}: {simpleFallingWithoutFile(temp_times, temp_accelerations)}")
             temp_times.clear()
             temp_accelerations.clear()
             j += 1
