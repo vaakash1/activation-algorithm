@@ -256,7 +256,7 @@ def simpleFallingWithoutFile(times, absolutes):
     current = deepcopy(latency)
     for a in absolutes[latency:]:
             if a < max_a and allUnderValue(absolutes[current - latency: current], max_a) and getSlope(absolutes, times, current, latency) < slopeCheck:
-                #print(f"Time for magnitude success: {times[current]}s.")
+                print(f"Time for magnitude success: {times[current]}s.")
                 # print(f"Magnitude for magnitude success: {absolutes[current]} m/s^2.")
                 # print(f"Slope for magnitude success: {getSlope(absolutes, times, current, latency)} m/s^3.\n")
                 good_times.append(times[current])
@@ -266,8 +266,8 @@ def simpleFallingWithoutFile(times, absolutes):
 
 for FileName in fallingFilesList:
     actualPath = f"{fallingFiles}/{FileName}"
+    print(f"File Path: {actualPath}")
     simpleFalling(actualPath)
-    break
 
 #checking runtime
 END_TIME = time.time()
