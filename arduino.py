@@ -18,7 +18,8 @@ def global_minimum(t_vals, a_vals):
             min_i = i
     return [min_a, min_i]
 
-fileName = "arduino-data/falling/ruler.TXT"
+fileName = "arduino-data/falling/SecuredRuler.TXT"
+extension = fileName.split('/')[-1]
 
 with open(fileName) as f:
     lines = f.readlines()
@@ -32,7 +33,7 @@ with open(fileName) as f:
             plt.xlabel("Time (s)") 
             plt.ylabel("Acceleration (m/s^2)")
             plt.scatter(temp_times, temp_accelerations)
-            plt.savefig(f"images/data/arduino/falling/fallingRulerData{j}.png")
+            plt.savefig(f"images/data/arduino/falling/{extension}{j}.png")
             plt.show()
             s = simpleFallingWithoutFile(temp_times, temp_accelerations)
             # global_minimum(temp_times, temp_accelerations)
