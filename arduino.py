@@ -16,7 +16,7 @@ def global_minimum(t_vals, a_vals):
         if (a_vals[i]) < min_i:
             min_a = a_vals[i]
             min_i = i
-    return [min_a, min_i]
+    return [min_a, min_i] # returns min acceleration and minimum i
 
 fileName = "arduino-data/walking/walkingWithFannyPack.TXT"
 mid = fileName.split("/")[-2]
