@@ -18,37 +18,40 @@ def global_minimum(t_vals, a_vals):
             min_i = i
     return [min_a, min_i] # returns min acceleration and minimum i
 
-fileName = "arduino-data/walking/walkingWithFannyPack.TXT"
+fileName = "arduino-data/walking/walkingWithFannyPack.TXT" # DRIVER CODE: PUT ANY FILE
 mid = fileName.split("/")[-2]
 extension = fileName.split('/')[-1].split(".")[0]
 
-with open(fileName) as f:
-    lines = f.readlines()
-    length = len(lines)
-    j = 1
-    for i in range(1, len(lines)):
-        if "New Trial" in lines[i]:
-            times.append(temp_times)
-            accelerations.append(temp_accelerations)
-            plt.title("Magnitude of Acceleration vs. Time")
-            plt.xlabel("Time (s)") 
-            plt.ylabel("Acceleration (m/s^2)")
-            plt.scatter(temp_times, temp_accelerations)
-            plt.savefig(f"images/data/arduino/{mid}/{extension}{j}.png")
-            plt.show()
-            s = simpleFallingWithoutFile(temp_times, temp_accelerations)
-            # global_minimum(temp_times, temp_accelerations)
-            print(f"falling of file {j}: {s}")
-            temp_times.clear()
-            temp_accelerations.clear()
-            j += 1
-        if "New event" in lines[i]:
-            temp_times.append(float(lines[i+1]) / 1000)
-            acc_x = float(lines[i+2])
-            acc_y = float(lines[i+3])
-            acc_z = float(lines[i+4])
-            temp_accelerations.append(comp(acc_x, acc_y, acc_z))
+def show_data():
+    with open(fileName) as f:
+        lines = f.readlines()
+        length = len(lines)
+        j = 1
+        for i in range(1, len(lines)):
+            if "New Trial" in lines[i]:
+                times.append(temp_times)
+                accelerations.append(temp_accelerations)
+                plt.title("Magnitude of Acceleration vs. Time")
+                plt.xlabel("Time (s)") 
+                plt.ylabel("Acceleration (m/s^2)")
+                plt.scatter(temp_times, temp_accelerations)
+                # plt.savefig(f"images/data/arduino/{mid}/{extension}{j}.png")
+                plt.show()
+                s = simpleFallingWithoutFile(temp_times, temp_accelerations)
+                # global_minimum(temp_times, temp_accelerations)
+                print(f"falling of file {j}: {s}")
+                temp_times.clear()
+                temp_accelerations.clear()
+                j += 1
+            if "New event" in lines[i]:
+                temp_times.append(float(lines[i+1]) / 1000)
+                acc_x = float(lines[i+2])
+                acc_y = float(lines[i+3])
+                acc_z = float(lines[i+4])
+                temp_accelerations.append(comp(acc_x, acc_y, acc_z))
 
+
+# show_data()
 
 print(len(times))
 print(len(accelerations))
