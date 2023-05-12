@@ -18,7 +18,7 @@ def global_minimum(t_vals, a_vals):
             min_i = i
     return [min_a, min_i] # returns min acceleration and minimum i
 
-fileName = "arduino-data/walking/walkingWithFannyPack.TXT" # DRIVER CODE: PUT ANY FILE
+fileName = "arduino-data/falling/TEST.TXT" # DRIVER CODE: PUT ANY FILE
 mid = fileName.split("/")[-2]
 extension = fileName.split('/')[-1].split(".")[0]
 
@@ -39,19 +39,23 @@ def show_data():
                 plt.show()
                 s = simpleFallingWithoutFile(temp_times, temp_accelerations)
                 # global_minimum(temp_times, temp_accelerations)
-                print(f"falling of file {j}: {s}")
+                # print(f"falling of file {j}: {s}")
                 temp_times.clear()
                 temp_accelerations.clear()
                 j += 1
             if "New event" in lines[i]:
-                temp_times.append(float(lines[i+1]) / 1000)
-                acc_x = float(lines[i+2])
-                acc_y = float(lines[i+3])
-                acc_z = float(lines[i+4])
-                temp_accelerations.append(comp(acc_x, acc_y, acc_z))
+                try:
+                    acc_x = float(lines[i+2])
+                    acc_y = float(lines[i+3].split("\n")[0])
+                    acc_z = float(lines[i+4])
+                    temp_times.append(float(lines[i+1]) / 1000)
+                    temp_accelerations.append(comp(acc_x, acc_y, acc_z))
+                except:
+                    print("You tried, it's ok!")
+                    print(i)
 
 
-# show_data()
+show_data()
 
 print(len(times))
 print(len(accelerations))

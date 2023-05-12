@@ -107933,7 +107933,6 @@ New Trial
 0.04
 0.01
 New Trial
-New Trial
 
  + New event: 
 460
@@ -116934,7 +116933,6 @@ New Trial
 0.30
 0.06
 0.50
-New Trial
 New Trial
 
  + New event: 
@@ -170941,7 +170939,6 @@ New Trial
 0.28
 0.18
 0.16
-New Trial
 New Trial
 
  + New event: 

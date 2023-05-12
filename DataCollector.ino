@@ -1,0 +1,188 @@
+/*
+  SD card read/write
+  This example shows how to read and write data to and from an SD card file
+  The circuit:
+   SD card attached to SPI bus as follows:
+ ** MOSI - pin 11
+ ** MISO - pin 12
+ ** CLK - pin 13
+ ** CS - pin 4 (for MKRZero SD: SDCARD_SS_PIN)
+  created   Nov 2010
+  by David A. Mellis
+  modified 9 Apr 2012
+  by Tom Igoe
+  This example code is in the public domain.
+*/
+
+#include <SPI.h>
+#include <SD.h>
+#include <Adafruit_MPU6050.h>
+#include <Adafruit_Sensor.h>
+#include <Wire.h>
+
+Adafruit_MPU6050 mpu;
+File myFile;
+
+void setup() {
+  // Open serial communications and wait for port to open:
+  Serial.begin(9600);
+  while (!Serial)
+    delay(10);  // will pause Zero, Leonardo, etc until serial console opens
+
+  Serial.println("Adafruit MPU6050 test!");
+  // Try to initialize!
+  if (!mpu.begin()) {
+    Serial.println("Failed to find MPU6050 chip");
+    while (1) {
+      delay(10);
+    }
+  }
+  Serial.println("MPU6050 Found!");
+
+  mpu.setAccelerometerRange(MPU6050_RANGE_8_G);
+  Serial.print("Accelerometer range set to: ");
+  switch (mpu.getAccelerometerRange()) {
+    case MPU6050_RANGE_2_G:
+      Serial.println("+-2G");
+      break;
+    case MPU6050_RANGE_4_G:
+      Serial.println("+-4G");
+      break;
+    case MPU6050_RANGE_8_G:
+      Serial.println("+-8G");
+      break;
+    case MPU6050_RANGE_16_G:
+      Serial.println("+-16G");
+      break;
+  }
+  mpu.setGyroRange(MPU6050_RANGE_500_DEG);
+  Serial.print("Gyro range set to: ");
+  switch (mpu.getGyroRange()) {
+    case MPU6050_RANGE_250_DEG:
+      Serial.println("+- 250 deg/s");
+      break;
+    case MPU6050_RANGE_500_DEG:
+      Serial.println("+- 500 deg/s");
+      break;
+    case MPU6050_RANGE_1000_DEG:
+      Serial.println("+- 1000 deg/s");
+      break;
+    case MPU6050_RANGE_2000_DEG:
+      Serial.println("+- 2000 deg/s");
+      break;
+  }
+
+  mpu.setFilterBandwidth(MPU6050_BAND_21_HZ);
+  Serial.print("Filter bandwidth set to: ");
+  switch (mpu.getFilterBandwidth()) {
+    case MPU6050_BAND_260_HZ:
+      Serial.println("260 Hz");
+      break;
+    case MPU6050_BAND_184_HZ:
+      Serial.println("184 Hz");
+      break;
+    case MPU6050_BAND_94_HZ:
+      Serial.println("94 Hz");
+      break;
+    case MPU6050_BAND_44_HZ:
+      Serial.println("44 Hz");
+      break;
+    case MPU6050_BAND_21_HZ:
+      Serial.println("21 Hz");
+      break;
+    case MPU6050_BAND_10_HZ:
+      Serial.println("10 Hz");
+      break;
+    case MPU6050_BAND_5_HZ:
+      Serial.println("5 Hz");
+      break;
+  }
+
+  Serial.print("Initializing SD card...");
+
+  if (!SD.begin(4)) {
+    Serial.println("initialization failed!");
+    while (1)
+      ;
+  }
+  Serial.println("initialization done.");
+
+  // open the file. note that only one file can be open at a time,
+  // so you have to close this one before opening another.
+  myFile = SD.open("test.txt", FILE_WRITE);
+
+  // if the file opened okay, write to it:
+  if (myFile) {
+    Serial.print("Writing to test.txt...");
+    myFile.println("New Trial");
+    // close the file:
+    myFile.close();
+    Serial.println("done.");
+  } else {
+    // if the file didn't open, print an error:
+    Serial.println("error opening test.txt");
+  }
+
+
+
+  //Start getting values for acceleration
+  myFile = SD.open("test.txt", FILE_WRITE);
+  for (int i = 0; i < 1000; i++) {
+    sensors_event_t a, g, temp;
+    mpu.getEvent(&a, &g, &temp);
+    myFile.println("\n + New event: ");
+    myFile.println(millis());
+    myFile.println(a.acceleration.x);
+    myFile.println(a.acceleration.y);
+    myFile.println(a.acceleration.z);
+    myFile.println(g.gyro.x);
+    myFile.println(g.gyro.y);
+    myFile.println(g.gyro.z);
+  }
+  myFile.close();
+
+
+  // re-open the file for reading:
+  myFile = SD.open("test.txt");
+
+  if (myFile) {
+    //read from the file until there's nothing else in it:
+    while (myFile.available()) {
+      Serial.write(myFile.read());
+    }
+  } else {
+    // if the file didn't open, print an error:
+    Serial.println("error opening test.txt");
+  }
+  myFile.close();
+
+  /*
+  for (int i = 0; i < 30; i++) {
+    sensors_event_t a, g, temp;
+    mpu.getEvent(&a, &g, &temp);
+    myFile = SD.open("test.txt", FILE_WRITE);
+
+    if (myFile) {
+      myFile.print("trial");
+      myFile.print("Acceleration X: ");
+      myFile.print(a.acceleration.x);
+      myFile.print(a.acceleration.y);
+      myFile.print(a.acceleration.z);
+
+      myFile.print(g.gyro.x);
+      myFile.print(g.gyro.y);
+      myFile.print(g.gyro.z);
+      Serial.println(i);
+      myFile.close();
+
+    } else {
+      Serial.println("Borken");
+    }
+  }*/
+}
+// close the file:
+
+
+void loop() {
+  // nothing happens after setup
+}
