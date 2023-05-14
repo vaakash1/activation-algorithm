@@ -2,25 +2,8 @@ from copy import deepcopy
 from math import *
 from functions import *
 
-class Entry:
-    """A class that stores time, 3 dimensions of acceleration, and 3 dimensions of rotation"""
-    def __init__(self, time: float, acc_x: float, acc_y: float, acc_z: float, rot_x: float, rot_y: float, rot_z: float, line = 0):
-        self.line = line
-        self.time = time
-        self.acc_x = acc_x
-        self.acc_y = acc_y
-        self.acc_z = acc_z
-        self.rot_x = rot_x
-        self.rot_y = rot_y
-        self.rot_z = rot_z
-        self.acc = comp(acc_x, acc_y, acc_z)
-        self.rot = comp(rot_x, rot_y, rot_z)
 
-    def is_between(self, lower, upper):
-        if (lower < self.line) and (self.line < upper):
-            return True
-        return False
-    
+   
 # testEntry = Entry(1, 2, 2, 2, 3, 3, 3)
 # print(testEntry.acc)
 
@@ -29,6 +12,7 @@ input("Press enter to continue 1")
 filePath = "arduino-data/falling/Venkat_falling_5_9_23.txt"
 
 def make_markers(fileName):
+    """return a list of the locations of all new trials"""
     markers = []
     with open(fileName, "r") as file:
         lines = file.readlines()
@@ -42,6 +26,7 @@ markers = make_markers(filePath)
 # print(markers)
 
 def get_entries(fileName):
+    """Parses text file into a list of entries. Returns a List[Entry] object."""
     entries = []
     with open(fileName, 'r') as file:
         lines = file.readlines()
@@ -64,6 +49,7 @@ input("press enter to continue 2")
 #print(raw_entries)
 
 def get_organized_entries(entries: list[Entry], markers: list[int]) -> list[list[Entry]]:
+    """Breaks up entries by trial"""
     organized_entries = []
     for i in range(len(markers) - 1):
         trial_entries = []
@@ -75,13 +61,6 @@ def get_organized_entries(entries: list[Entry], markers: list[int]) -> list[list
 
 organized_entries = get_organized_entries(raw_entries, markers)
 
-class Batch:
-    def __init__(self, listOfEntries: list[Entry], falling = False, first_line = 0):
-        self.entries = listOfEntries
-        self.falling = falling
-        self.fl = first_line
-        
-
 def get_batches(organized_entries: list[list[Entry]], batch_size = 15) -> list[list[Batch]]:
     batches = []
     for trial_entries in organized_entries:
@@ -89,14 +68,46 @@ def get_batches(organized_entries: list[list[Entry]], batch_size = 15) -> list[l
         if len(trial_entries) < batch_size:
             continue
         for i in range(len(trial_entries) - batch_size):
-            trial_batch = Batch(trial_entries[i: i + batch_size], first_line=trial_entries[i].line)
+            trial_batch = Batch(trial_entries[i: i + batch_size], 0, first_line=trial_entries[i].line)
             trial_batches.append(trial_batch)
         batches.append(trial_batches)
     return batches
 
 batches = get_batches(organized_entries)
-input('press enter to continue 3')
-print(batches[0][0])
+input('press enter to continue :3')
+
+threshold = 6.5
+
+
+#GOAL: edit all elements in batches so that object.falling accurately represents if they're actually falling
+
+#Attempt 1: check if all accelerations are greater than a certain number. If one is less, then it is falling
+counter = 0
+total_counter = 0
+for trial_batches in batches:
+    for batch in trial_batches:
+        for entry in batch.entries:
+            total_counter += 1
+            if entry.acc < threshold:
+                counter += 1
+                #print(batch.falling)
+                batch.activate()
+                print(batch.falling)
+print(counter)
+print(total_counter)
+
+input('press enter to continue 4')
+for sub_batch in batches:
+    for batch in sub_batch:
+        #print(batch.falling)
+        if batch.falling == 1:
+            print("you fell")
+            print(batch.__str__())
+    
+# ML CODE Structure
+
+
+
 # goodEntry = Entry(32, 312, 312, 543, 123, 54, 123)
 
 # print(goodEntry.line)
