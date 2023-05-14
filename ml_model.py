@@ -26,7 +26,7 @@ markers = make_markers(filePath)
 # print(markers)
 
 def get_entries(fileName):
-    """Parses text file into a list of entries. Returns a List[Entry] object."""
+    """Parses text file into a list of entries. Returns a list[Entry] object."""
     entries = []
     with open(fileName, 'r') as file:
         lines = file.readlines()
@@ -82,28 +82,33 @@ threshold = 6.5
 #GOAL: edit all elements in batches so that object.falling accurately represents if they're actually falling
 
 #Attempt 1: check if all accelerations are greater than a certain number. If one is less, then it is falling
-counter = 0
-total_counter = 0
-for trial_batches in batches:
-    for batch in trial_batches:
-        for entry in batch.entries:
-            total_counter += 1
-            if entry.acc < threshold:
-                counter += 1
-                #print(batch.falling)
-                batch.activate()
-                print(batch.falling)
-print(counter)
-print(total_counter)
-
-input('press enter to continue 4')
-for sub_batch in batches:
-    for batch in sub_batch:
-        #print(batch.falling)
-        if batch.falling == 1:
-            print("you fell")
-            print(batch.__str__())
+def make_simple_algo(test = True):
+    counter = 0
+    total_counter = 0
+    for trial_batches in batches:
+        for batch in trial_batches:
+            for entry in batch.entries:
+                total_counter += 1
+                if entry.acc < threshold:
+                    counter += 1
+                    #print(batch.falling)
+                    batch.activate()
+                    #print(batch.falling)
+    print(counter)
+    print(total_counter)
     
+    if test:
+        input('press enter to continue 4')
+        for sub_batch in batches:
+            for batch in sub_batch:
+                #print(batch.falling)
+                if batch.falling == 1:
+                    print("you fell")
+                    print(batch.__str__())
+        
+make_simple_algo()
+
+
 # ML CODE Structure
 
 

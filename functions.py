@@ -109,17 +109,17 @@ e15 = Entry(1, 0.1, 0, 0, 0, 0, 0, 0)
 arr_entries = [e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15]
 
 tester = Batch(arr_entries, 0, arr_entries[0].line)
-print(tester.falling)
+#print(tester.falling)
 # tester.falling = 1
 # tester.activate()
 # print(tester.falling)
 
 for entry in tester.entries:
-    print(entry.rot)
+    #print(entry.rot)
     if entry.rot > 0:
         tester.activate()
 
-print(tester.falling)
+#print(tester.falling)
 # class Number:
 #     def __init__(self, num: int):
 #         self.num = num
