@@ -1,7 +1,7 @@
 from copy import deepcopy
 from math import *
 from functions import *
-#import tensorflow as tf
+import tensorflow as tf
 
 #print(tf.zeros(2,2,2))
 # testEntry = Entry(1, 2, 2, 2, 3, 3, 3)
@@ -103,25 +103,19 @@ batches = get_batches(organized_entries)
 input('press enter to continue 3')
 threshold = 6.5
 
-def activate_batches(batches: list[list[Batch]], error = 0.050):
+def activate_batches(batches: list[list[Batch]]):
     for trial_batches in batches:
-        min_batch = trial_batches[0]
-        min_acc = trial_batches[0].avg_acc
-        min_index = 0
-        i = 0
+        min_time = trial_batches[0].entries[0].time
+        min_acc = trial_batches[0].entries[0].acc
         for batch in trial_batches:
-            if batch.avg_acc < min_acc:
-                min_acc = batch.avg_acc
-                min_batch = trial_batches[i]
-                min_index = i
-            i += 1
+            for entry in batch.entries:
+                if entry.acc < min_acc:
+                    min_acc = entry.acc
+                    min_time = entry.time
 
-        min_time = min_batch.entries[0].time
-        min_time -= 0.5
-
-        for j in range(len(trial_batches)):
-            if abs(trial_batches[j].entries[0].time - min_time) <= error:
-                trial_batches[j].activate()
+        for batch in trial_batches:
+            if min_time in batch.times:
+                batch.activate()
 
 def test_batches():
     input('press enter to continue 4')

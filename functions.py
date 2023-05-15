@@ -84,6 +84,7 @@ class Batch:
         self.entries = listOfEntries
         self.falling = falling
         self.fl = first_line
+        self.times = [self.entries[i].time for i in range(len(self.entries))]
         self.avg_acc = avg([entry.acc for entry in self.entries])
 
     def __str__(self) -> str:
