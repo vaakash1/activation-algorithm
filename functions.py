@@ -66,18 +66,25 @@ class Entry:
 
     def __str__(self) -> str:
         return f'ENTRY DATA at time {self.time} and line {self.line}: Accelerations: {self.acc}\nRotations: {self.rot}\n'
+    
+    def get_arr(self):
+        return [self.acc / 400, self.rot / 10]
 
     def is_between(self, lower, upper):
         if (lower < self.line) and (self.line < upper):
             return True
         return False
- 
+
+def avg(arr):
+    return sum(arr) / len(arr) if len(arr) != 0 else 0
+
 class Batch:
     """"Stores lists of 15 entries that is an input for the ML model"""
     def __init__(self, listOfEntries: list[Entry], falling, first_line = 0):
         self.entries = listOfEntries
         self.falling = falling
         self.fl = first_line
+        self.avg_acc = avg([entry.acc for entry in self.entries])
 
     def __str__(self) -> str:
         result = f"BATCH DATA from line {self.fl}:\nFALLING STATUS: {self.falling}\n"
@@ -86,6 +93,7 @@ class Batch:
             result += entry.__str__()
             result += "\n"
         return result
+    
 
     def activate(self):
         self.falling = 1

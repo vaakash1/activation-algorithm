@@ -1,9 +1,9 @@
 from copy import deepcopy
 from math import *
 from functions import *
+#import tensorflow as tf
 
-
-   
+#print(tf.zeros(2,2,2))
 # testEntry = Entry(1, 2, 2, 2, 3, 3, 3)
 # print(testEntry.acc)
 
@@ -22,7 +22,6 @@ def make_markers(fileName):
                 markers.append(i)
     return markers
 
-markers = make_markers(filePath)
 # print(markers)
 
 def get_entries(fileName):
@@ -44,9 +43,7 @@ def get_entries(fileName):
                     print(f"Error occurred in the entry from line {i}.")
     return entries
 
-raw_entries = get_entries(filePath)
-input("press enter to continue 2")
-#print(raw_entries)
+
 
 def get_organized_entries(entries: list[Entry], markers: list[int]) -> list[list[Entry]]:
     """Breaks up entries by trial"""
@@ -59,7 +56,6 @@ def get_organized_entries(entries: list[Entry], markers: list[int]) -> list[list
         organized_entries.append(trial_entries)
     return organized_entries
 
-organized_entries = get_organized_entries(raw_entries, markers)
 
 def get_batches(organized_entries: list[list[Entry]], batch_size = 15) -> list[list[Batch]]:
     batches = []
@@ -73,18 +69,16 @@ def get_batches(organized_entries: list[list[Entry]], batch_size = 15) -> list[l
         batches.append(trial_batches)
     return batches
 
-batches = get_batches(organized_entries)
-input('press enter to continue :3')
 
-threshold = 6.5
+
 
 
 #GOAL: edit all elements in batches so that object.falling accurately represents if they're actually falling
 
 #Attempt 1: check if all accelerations are greater than a certain number. If one is less, then it is falling
-def make_simple_algo(test = True):
-    counter = 0
-    total_counter = 0
+counter = 0
+total_counter = 0
+def make_simple_algo(threshold = 6.5):
     for trial_batches in batches:
         for batch in trial_batches:
             for entry in batch.entries:
@@ -96,21 +90,102 @@ def make_simple_algo(test = True):
                     #print(batch.falling)
     print(counter)
     print(total_counter)
-    
-    if test:
-        input('press enter to continue 4')
-        for sub_batch in batches:
-            for batch in sub_batch:
-                #print(batch.falling)
-                if batch.falling == 1:
-                    print("you fell")
-                    print(batch.__str__())
-        
-make_simple_algo()
+
+
+
+                    
+markers = make_markers(filePath)
+raw_entries = get_entries(filePath)
+input("press enter to continue 2")
+#print(raw_entries)
+organized_entries = get_organized_entries(raw_entries, markers)
+batches = get_batches(organized_entries)
+input('press enter to continue 3')
+threshold = 6.5
+
+def activate_batches(batches: list[list[Batch]], error = 0.050):
+    for trial_batches in batches:
+        min_batch = trial_batches[0]
+        min_acc = trial_batches[0].avg_acc
+        min_index = 0
+        i = 0
+        for batch in trial_batches:
+            if batch.avg_acc < min_acc:
+                min_acc = batch.avg_acc
+                min_batch = trial_batches[i]
+                min_index = i
+            i += 1
+
+        min_time = min_batch.entries[0].time
+        min_time -= 0.5
+
+        for j in range(len(trial_batches)):
+            if abs(trial_batches[j].entries[0].time - min_time) <= error:
+                trial_batches[j].activate()
+
+def test_batches():
+    input('press enter to continue 4')
+    for sub_batch in batches:
+        for batch in sub_batch:
+            #print(batch.falling)
+            if batch.falling == 1:
+                print("you fell")
+                print(batch.__str__())
+
+
+activate_batches(batches)
+test_batches()
+
+#make_simple_algo()
 
 
 # ML CODE Structure
 
+# GENERAL ML CODE
+#Turn batches into a usable format
+
+#[[batch.time, batch.acc, ..., batch.falling][][][]]
+# markers = make_markers(filePath)
+# raw_entries = get_entries(filePath)
+# organized_entries = get_organized_entries(raw_entries, markers)
+# batches = get_batches(organized_entries)
+# data_for_model_x = [[]]
+# data_for_model_y = [[]]
+# for i in range(len(batches)):
+#     for batch in batches[i]:
+#         ml_row = []
+#         for entry in batch.entries:
+#             ml_row += entry.get_arr()
+#         data_for_model_x[i].append(ml_row)
+#         data_for_model_y[i].append(batch.falling)
+
+# #Split the data into test and train
+# entries_for_test = floor(counter * 0.8)
+# train_x = data_for_model_x[:entries_for_test]
+# train_y = data_for_model_y[:entries_for_test]
+# test_x = data_for_model_x[entries_for_test:]
+# test_y = data_for_model_y[entries_for_test:]
+#
+#
+
+
+#Make some structure
+# model = tf.keras.models.Sequential([
+#     tf.keras.layers.Input(shape=(len(train_x[0]),)),
+#     tf.keras.layers.Dense(128, activation='relu'),
+#     tf.keras.layers.Dense(10, activation='relu'),
+#     tf.keras.layers.Dense(1, activation='sigmoid')
+# ])
+# model.compile(optimizer='adam', loss='mean_squared_error')
+
+
+#Train the model
+#[e1, e2, e3...] = x
+
+#model.fit(train_x, train_y, epochs=20)
+
+#test the model
+# model.evaluate(test_x, test_y)
 
 
 # goodEntry = Entry(32, 312, 312, 543, 123, 54, 123)
